@@ -1,5 +1,5 @@
 package com.lukkaw.drawable;
 
 public enum DrawableState {
-    DRAWING, MOVING, DONE
+	DRAWING, MOVING, DONE
 }

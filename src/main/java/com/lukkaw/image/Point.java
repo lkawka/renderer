@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Point {
-    private Integer x;
-    private Integer y;
+	private Integer x;
+	private Integer y;
 }

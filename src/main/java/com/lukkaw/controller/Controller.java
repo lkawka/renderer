@@ -1,16 +1,16 @@
 package com.lukkaw.controller;
 
+import static java.util.Comparator.comparing;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lukkaw.Config;
 import com.lukkaw.drawable.Drawable;
 import com.lukkaw.image.FastImage;
 import com.lukkaw.image.Point;
 
 import javafx.scene.input.MouseEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Comparator.comparing;
 
 public class Controller {
 

@@ -1,12 +1,9 @@
 package com.lukkaw.ui;
 
 import com.lukkaw.Config;
-import com.lukkaw.image.FastImage;
 import com.lukkaw.controller.Controller;
-import com.lukkaw.controller.ImageListener;
-import javafx.scene.Group;
+
 import javafx.scene.Parent;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.AllArgsConstructor;
@@ -14,21 +11,21 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Layout {
 
-    private Config config;
-    private Controller controller;
-    private Stage stage;
+	private Config config;
+	private Controller controller;
+	private Stage stage;
 
-    public Parent createUI() {
-        BorderPane borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: #f0f0f0;");
+	public Parent createUI() {
+		BorderPane borderPane = new BorderPane();
+		borderPane.setStyle("-fx-background-color: #f0f0f0;");
 
-        AppToolbar toolbar = new AppToolbar(controller, stage);
-        DrawingCanvas drawingCanvas = new DrawingCanvas(config, controller);
-        DrawableControl drawableControl = new DrawableControl(controller);
+		AppToolbar toolbar = new AppToolbar(controller, stage);
+		DrawingCanvas drawingCanvas = new DrawingCanvas(config, controller);
+		DrawableControl drawableControl = new DrawableControl(controller);
 
-        borderPane.setTop(toolbar.createUI());
-        borderPane.setCenter(drawingCanvas.createUI());
-        borderPane.setRight(drawableControl.createUI());
-        return borderPane;
-    }
+		borderPane.setTop(toolbar.createUI());
+		borderPane.setCenter(drawingCanvas.createUI());
+		borderPane.setRight(drawableControl.createUI());
+		return borderPane;
+	}
 }

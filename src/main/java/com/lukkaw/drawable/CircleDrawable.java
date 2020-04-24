@@ -70,7 +70,7 @@ public class CircleDrawable extends Drawable {
 	}
 
 	@JsonIgnore
-    @Override
+	@Override
 	public Shape getShape() {
 		return circle;
 	}

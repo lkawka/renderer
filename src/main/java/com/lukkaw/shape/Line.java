@@ -13,28 +13,28 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Line extends Shape {
-    private PointPair pair;
+	private PointPair pair;
 
-    public Line(PointPair pair, Integer brush, Color color) {
-        super(color, brush);
-        this.pair = pair;
-    }
+	public Line(PointPair pair, Integer brush, Color color) {
+		super(color, brush);
+		this.pair = pair;
+	}
 
-    @JsonIgnore
-    public Point getPoint1() {
-        return pair.getPoint1();
-    }
+	@JsonIgnore
+	public Point getPoint1() {
+		return pair.getPoint1();
+	}
 
-    public void setPoint1(Point point) {
-        pair.setPoint1(point);
-    }
+	public void setPoint1(Point point) {
+		pair.setPoint1(point);
+	}
 
-    @JsonIgnore
-    public Point getPoint2() {
-        return pair.getPoint2();
-    }
+	@JsonIgnore
+	public Point getPoint2() {
+		return pair.getPoint2();
+	}
 
-    public void setPoint2(Point point) {
-        pair.setPoint2(point);
-    }
+	public void setPoint2(Point point) {
+		pair.setPoint2(point);
+	}
 }

@@ -1,13 +1,13 @@
 package com.lukkaw.image;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.util.Arrays;
+
 import com.lukkaw.Config;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.util.Arrays;
 
 public class FastImage {
 	private Integer width;
