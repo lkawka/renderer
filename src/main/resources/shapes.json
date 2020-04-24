@@ -1,0 +1,109 @@
+[ {
+  "name" : "Circle #1",
+  "type" : "CIRCLE",
+  "state" : "MOVING",
+  "circle" : {
+    "color" : {
+      "r" : 255,
+      "g" : 230,
+      "b" : 153
+    },
+    "brush" : 5,
+    "priority" : 8,
+    "center" : {
+      "x" : 242,
+      "y" : 205
+    },
+    "radius" : 17
+  },
+  "changingRadius" : false
+}, {
+  "name" : "Polygon #2",
+  "type" : "POLYGON",
+  "state" : "MOVING",
+  "polygon" : {
+    "color" : {
+      "r" : 102,
+      "g" : 153,
+      "b" : 153
+    },
+    "brush" : 2,
+    "priority" : 5,
+    "points" : [ {
+      "x" : 224,
+      "y" : 111
+    }, {
+      "x" : 31,
+      "y" : 246
+    }, {
+      "x" : 198,
+      "y" : 338
+    }, {
+      "x" : 526,
+      "y" : 255
+    }, {
+      "x" : 449,
+      "y" : 147
+    }, {
+      "x" : 360,
+      "y" : 65
+    }, {
+      "x" : 322,
+      "y" : 251
+    }, {
+      "x" : 327,
+      "y" : 387
+    }, {
+      "x" : 213,
+      "y" : 366
+    }, {
+      "x" : 264,
+      "y" : 188
+    }, {
+      "x" : 234,
+      "y" : 169
+    }, {
+      "x" : 223,
+      "y" : 110
+    } ]
+  },
+  "movingState" : "NOTHING_SELECTED",
+  "selectedPoint" : {
+    "x" : 335,
+    "y" : 154
+  },
+  "selectedLine" : {
+    "point1" : {
+      "x" : 325,
+      "y" : 204
+    },
+    "point2" : {
+      "x" : 363,
+      "y" : 18
+    }
+  }
+}, {
+  "name" : "Line #3",
+  "type" : "LINE",
+  "state" : "MOVING",
+  "line" : {
+    "color" : {
+      "r" : 0,
+      "g" : 0,
+      "b" : 0
+    },
+    "brush" : 7,
+    "priority" : 7,
+    "pair" : {
+      "point1" : {
+        "x" : 117,
+        "y" : 119
+      },
+      "point2" : {
+        "x" : 302,
+        "y" : 264
+      }
+    }
+  },
+  "movingState" : "NO_POINT_SELECTED"
+} ]
