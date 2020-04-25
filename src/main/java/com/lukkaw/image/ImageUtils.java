@@ -33,7 +33,7 @@ public class ImageUtils {
 
 	public static Color lerp(Color color1, Color color2, double t) {
 		return new Color((int) (color1.getR() * (1 - t) + color2.getR() * t),
-				(int) (color1.getB() * (1 - t) + color2.getB() * t),
+				(int) (color1.getG() * (1 - t) + color2.getG() * t),
 				(int) (color1.getB() * (1 - t) + color2.getB() * t));
 	}
 

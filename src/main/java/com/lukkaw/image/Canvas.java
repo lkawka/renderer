@@ -114,7 +114,6 @@ public class Canvas {
 			}
 			intensifyPixels(x1, y1, lineTransform, color, thickness, twoVDx, invDenom, twoDxInvDenom);
 		}
-
 	}
 
 	private void intensifyPixels(int x, int y, LineTransform lineTransform, Color color, int thickness, int twoVDx,
@@ -142,7 +141,6 @@ public class Canvas {
 	}
 
 	private double coverage(double w, double D, double r) {
-		w /= 2;
 		if (w >= r) {
 			if (w <= D) {
 				return cov(D - w, r);
