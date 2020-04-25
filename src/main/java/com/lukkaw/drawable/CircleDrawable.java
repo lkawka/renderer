@@ -2,7 +2,7 @@ package com.lukkaw.drawable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Color;
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.shape.Circle;
@@ -24,16 +24,16 @@ public class CircleDrawable extends Drawable {
 	}
 
 	@Override
-	public void draw(FastImage fastImage) {
+	public void draw(Canvas canvas) {
 		switch (state) {
 		case DRAWING:
 			if (circle.getCenter() != null) {
-				fastImage.drawPoint(circle.getCenter(), circle.getColor(), circle.getBrush());
+				canvas.drawPoint(circle.getCenter(), circle.getColor(), circle.getBrush());
 			}
 			break;
 		case MOVING:
 		case DONE:
-			fastImage.drawCircle(circle.getCenter(), circle.getRadius(), circle.getColor(), circle.getBrush());
+			canvas.drawCircle(circle.getCenter(), circle.getRadius(), circle.getColor(), circle.getBrush());
 			break;
 		}
 	}

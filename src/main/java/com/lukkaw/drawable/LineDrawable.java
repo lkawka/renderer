@@ -2,7 +2,7 @@ package com.lukkaw.drawable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Color;
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
@@ -25,16 +25,16 @@ public class LineDrawable extends Drawable {
 	}
 
 	@Override
-	public void draw(FastImage fastImage) {
+	public void draw(Canvas canvas) {
 		switch (state) {
 		case DRAWING:
 			if (line.getPoint1() != null) {
-				fastImage.drawPoint(line.getPoint1(), line.getColor(), line.getBrush());
+				canvas.drawPoint(line.getPoint1(), line.getColor(), line.getBrush());
 			}
 			break;
 		case MOVING:
 		case DONE:
-			fastImage.drawLine(line.getPair(), line.getColor(), line.getBrush());
+			canvas.drawLine(line.getPair(), line.getColor(), line.getBrush());
 			break;
 		}
 	}

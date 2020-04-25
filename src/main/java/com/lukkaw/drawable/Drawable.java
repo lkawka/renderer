@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 import com.lukkaw.image.Point;
 import com.lukkaw.shape.Shape;
 
@@ -35,7 +35,7 @@ public abstract class Drawable {
 		this.name = name;
 	}
 
-	public void draw(FastImage fastImage) {
+	public void draw(Canvas canvas) {
 		throw new RuntimeException("Not implemented");
 	}
 

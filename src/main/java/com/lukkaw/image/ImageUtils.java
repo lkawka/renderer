@@ -1,6 +1,5 @@
 package com.lukkaw.image;
 
-import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -32,45 +31,50 @@ public class ImageUtils {
 		return circlePoints(center, radius).stream().anyMatch(circlePoint -> inVicinity(circlePoint, point));
 	}
 
-	public static Optional<Point> linePoint(PointPair line, Point point) {
+	public static Color lerp(Color color1, Color color2, double t) {
+		return new Color((int) (color1.getR() * (1 - t) + color2.getR() * t),
+				(int) (color1.getB() * (1 - t) + color2.getB() * t),
+				(int) (color1.getB() * (1 - t) + color2.getB() * t));
+	}
+
+	public static Optional<? extends Point> linePoint(PointPair line, Point point) {
 		return linePoints(line).stream().filter(linePoint -> inVicinity(new PointPair(linePoint, point))).findFirst();
 	}
 
-	public static List<Point> linePoints(PointPair line) {
-		List<Point> points = new ArrayList<>();
+	public static List<? extends Point> linePoints(PointPair line) {
+		LineTransform lineTransform = new LineTransform(line);
+		PointPair transformedLine = lineTransform.getLineInZone1();
 
-		if (line.getPoint1().getX() > line.getPoint2().getX()) {
-			Point tmp = line.getPoint1();
-			line.setPoint1(line.getPoint2());
-			line.setPoint2(tmp);
-		}
+		int x1 = transformedLine.getPoint1().getX();
+		int y1 = transformedLine.getPoint1().getY();
+		int x2 = transformedLine.getPoint2().getX();
+		int y2 = transformedLine.getPoint2().getY();
 
-		int x1 = line.getPoint1().getX();
-		int y1 = line.getPoint1().getY();
-		int x2 = line.getPoint2().getX();
-		int y2 = line.getPoint2().getY();
+		List<Point> zone1Points = new ArrayList<>();
 
 		int dx = x2 - x1;
 		int dy = y2 - y1;
+		int d = 2 * dy - dx;
+		int dE = 2 * dy;
+		int dNE = 2 * (dy - dx);
 
-		points.add(new Point(x1, y1));
-		points.add(new Point(x2, y2));
-
-		if (dx >= abs(dy)) {
-			if (dy >= 0) {
-				points.addAll(zone1LinePoints(x1, y1, x2, y2, dx, dy));
-			} else {
-				points.addAll(zone8LinePoints(x1, y1, x2, y2, dx, dy));
+		zone1Points.add(new Point(x1, y1));
+		zone1Points.add(new Point(x2, y2));
+		while (x1 < x2) {
+			++x1;
+			--x2;
+			if (d < 0)
+				d += dE;
+			else {
+				d += dNE;
+				++y1;
+				--y2;
 			}
-		} else {
-			if (dy >= 0) {
-				points.addAll(zone2LinePoints(x1, y1, x2, y2, dx, dy));
-			} else {
-				points.addAll(zone7LinePoints(x1, y1, x2, y2, dx, dy));
-			}
+			zone1Points.add(new Point(x1, y1));
+			zone1Points.add(new Point(x2, y2));
 		}
 
-		return points;
+		return lineTransform.convertToOriginalZone(zone1Points);
 	}
 
 	public static List<Point> circlePoints(Point center, int radius) {
@@ -95,95 +99,6 @@ public class ImageUtils {
 			}
 			++i;
 			points.addAll(octanCirclePoints(center, i, j));
-		}
-		return points;
-	}
-
-	private static List<Point> zone1LinePoints(int x1, int y1, int x2, int y2, int dx, int dy) {
-		List<Point> points = new ArrayList<>();
-		int d = 2 * dy - dx;
-		int dE = 2 * dy;
-		int dNE = 2 * (dy - dx);
-
-		while (x1 < x2) {
-			++x1;
-			--x2;
-			if (d < 0)
-				d += dE;
-			else {
-				d += dNE;
-				++y1;
-				--y2;
-			}
-			points.add(new Point(x1, y1));
-			points.add(new Point(x2, y2));
-		}
-		return points;
-	}
-
-	private static List<Point> zone8LinePoints(int x1, int y1, int x2, int y2, int dx, int dy) {
-		List<Point> points = new ArrayList<>();
-		int d = 2 * dy + dx;
-		int dE = 2 * dy;
-		int dSE = 2 * (dy + dx);
-
-		while (x1 < x2) {
-			++x1;
-			--x2;
-			if (d > 0) {
-				d += dE;
-			} else {
-				--y1;
-				++y2;
-				d += dSE;
-
-			}
-			points.add(new Point(x1, y1));
-			points.add(new Point(x2, y2));
-		}
-		return points;
-	}
-
-	private static List<Point> zone2LinePoints(int x1, int y1, int x2, int y2, int dx, int dy) {
-		List<Point> points = new ArrayList<>();
-		int d = dy - 2 * dx;
-		int dN = -2 * dx;
-		int dNE = 2 * dy - 2 * dx;
-
-		while (y1 < y2) {
-			y1++;
-			y2--;
-			if (d > 0) {
-				d += dN;
-			} else {
-				x1++;
-				x2--;
-				d += dNE;
-			}
-			points.add(new Point(x1, y1));
-			points.add(new Point(x2, y2));
-		}
-		return points;
-	}
-
-	private static List<Point> zone7LinePoints(int x1, int y1, int x2, int y2, int dx, int dy) {
-		List<Point> points = new ArrayList<>();
-		int d = dy + 2 * dx;
-		int dS = 2 * dx;
-		int dSE = 2 * dy + 2 * dx;
-
-		while (y1 > y2) {
-			y1--;
-			y2++;
-			if (d > 0) {
-				x1++;
-				x2--;
-				d += dSE;
-			} else {
-				d += dS;
-			}
-			points.add(new Point(x1, y1));
-			points.add(new Point(x2, y2));
 		}
 		return points;
 	}

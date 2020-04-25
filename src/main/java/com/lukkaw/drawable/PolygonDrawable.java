@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lukkaw.image.Canvas;
 import com.lukkaw.image.Color;
-import com.lukkaw.image.FastImage;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
@@ -31,27 +31,27 @@ public class PolygonDrawable extends Drawable {
 	}
 
 	@Override
-	public void draw(FastImage fastImage) {
+	public void draw(Canvas canvas) {
 		List<Point> points = polygon.getPoints();
 		switch (state) {
 		case DRAWING:
 			if (points.size() == 1) {
-				fastImage.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
+				canvas.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
 			} else {
 				polygon.getLinesWithoutLast().forEach(line ->
-						fastImage.drawLine(line, polygon.getColor(), polygon.getBrush()));
+						canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
 			}
 			break;
 		case MOVING:
 			if (points.size() == 1) {
-				fastImage.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
+				canvas.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
 			} else {
 				polygon.getLines().forEach(line ->
-						fastImage.drawLine(line, polygon.getColor(), polygon.getBrush()));
+						canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
 			}
 			break;
 		case DONE:
-			polygon.getLines().forEach(line -> fastImage.drawLine(line, polygon.getColor(), polygon.getBrush()));
+			polygon.getLines().forEach(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
 		}
 	}
 
@@ -109,7 +109,7 @@ public class PolygonDrawable extends Drawable {
 	}
 
 	private boolean lineSelected(PointPair line, Point click) {
-		Optional<Point> pointOnLine = ImageUtils.linePoint(line, click);
+		Optional<? extends Point> pointOnLine = ImageUtils.linePoint(line, click);
 		if (pointOnLine.isPresent()) {
 			movingState = MovingState.LINE_SELECTED;
 			selectedLine = line;

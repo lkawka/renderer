@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Color {
 	public static final Color BLACK = new Color(0, 0, 0);
+	public static final Color BACKGROUND = new Color(255, 255, 255);
 
 	private int r;
 	private int g;

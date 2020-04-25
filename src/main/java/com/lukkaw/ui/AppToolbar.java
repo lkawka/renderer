@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AppToolbar {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final File INITIAL_DIR = new File("src/main/resources");
 
 	private Controller controller;
 	private Stage stage;
@@ -46,6 +47,7 @@ public class AppToolbar {
 		ExtensionFilter extensionFilter = new ExtensionFilter("JSON files (*.json)", "*.json");
 		fileChooser.getExtensionFilters().add(extensionFilter);
 		fileChooser.setTitle("Open shapes");
+		fileChooser.setInitialDirectory(INITIAL_DIR);
 
 		File file = fileChooser.showOpenDialog(stage);
 
@@ -69,6 +71,8 @@ public class AppToolbar {
 		ExtensionFilter extensionFilter = new ExtensionFilter("JSON files (*.json)", "*.json");
 		fileChooser.getExtensionFilters().add(extensionFilter);
 		fileChooser.setTitle("Save shapes");
+		fileChooser.setInitialDirectory(INITIAL_DIR);
+		fileChooser.setInitialFileName("shapes");
 
 		File file = fileChooser.showSaveDialog(stage);
 

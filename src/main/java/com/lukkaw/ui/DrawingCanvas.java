@@ -3,7 +3,7 @@ package com.lukkaw.ui;
 import com.lukkaw.Config;
 import com.lukkaw.controller.Controller;
 import com.lukkaw.controller.ImageListener;
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -14,17 +14,12 @@ import javafx.scene.layout.VBox;
 
 public class DrawingCanvas implements ImageListener {
 
-	private Config config;
-	private Controller controller;
 	private ImageView imageView;
 
 	public DrawingCanvas(Config config, Controller controller) {
-		this.config = config;
-		this.controller = controller;
-
 		controller.addListener(this);
 
-		imageView = new ImageView(new FastImage(config).getImage());
+		imageView = new ImageView(new Canvas(config, false).getImage());
 		imageView.setFitHeight(config.getCanvasHeight());
 		imageView.setFitWidth(config.getCanvasWidth());
 		imageView.setPreserveRatio(true);
@@ -33,7 +28,7 @@ public class DrawingCanvas implements ImageListener {
 	}
 
 	@Override
-	public void draw(FastImage image) {
+	public void draw(Canvas image) {
 		imageView.setImage(image.getImage());
 	}
 

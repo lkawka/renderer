@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.lukkaw.Config;
 import com.lukkaw.drawable.Drawable;
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 import com.lukkaw.image.Point;
 
 import javafx.scene.input.MouseEvent;
@@ -20,6 +20,7 @@ public class Controller {
 	private List<Drawable> drawables = new ArrayList<>();
 	private Drawable active;
 	private Long highestPriority = 1L;
+	private Boolean useAntiAliasing = false;
 
 	public Controller(Config config) {
 		this.config = config;
@@ -28,8 +29,7 @@ public class Controller {
 	public void imageClicked(MouseEvent e) {
 		if (active != null) {
 			active.edit(new Point((int) e.getX(), (int) e.getY()));
-			redrawDrawables();
-			broadcastActiveSet(active);
+			refresh();
 		}
 	}
 
@@ -107,15 +107,24 @@ public class Controller {
 		redrawDrawables();
 	}
 
+	public Boolean getAntiAliasing() {
+		return useAntiAliasing;
+	}
+
+	public void setAntiAliasing(boolean useAntiAliasing) {
+		this.useAntiAliasing = useAntiAliasing;
+		refresh();
+	}
+
 	private void redrawDrawables() {
-		FastImage image = new FastImage(config);
+		Canvas image = new Canvas(config, useAntiAliasing);
 		drawables.stream()
 				.sorted(comparing(d -> d.getShape().getPriority()))
 				.forEach(drawable -> drawable.draw(image));
 		draw(image);
 	}
 
-	private void draw(FastImage image) {
+	private void draw(Canvas image) {
 		imageListeners.forEach(listener -> listener.draw(image));
 	}
 

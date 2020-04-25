@@ -9,12 +9,15 @@ import com.lukkaw.drawable.LineDrawable;
 import com.lukkaw.drawable.PolygonDrawable;
 import com.lukkaw.image.Color;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -45,7 +48,8 @@ public class DrawableControl implements DrawableListener {
 	public Node createUI() {
 		VBox vBox = createVBox();
 		vBox.setPrefWidth(196);
-		vBox.getChildren().addAll(createNewDrawableMenu(), createDrawableList(), createSingleDrawableControl());
+		vBox.getChildren().addAll(createNewDrawableMenu(), createAntiAliasingControl(), createDrawableList(),
+				createSingleDrawableControl());
 		return vBox;
 	}
 
@@ -114,6 +118,17 @@ public class DrawableControl implements DrawableListener {
 		vBox.getChildren().addAll(label, hBox);
 
 		return vBox;
+	}
+
+	private Node createAntiAliasingControl() {
+		CheckBox antiAliasingCheckBox = new CheckBox("Anti aliasing");
+		antiAliasingCheckBox.setSelected(controller.getAntiAliasing());
+		antiAliasingCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if(newValue != null && oldValue != newValue) {
+				controller.setAntiAliasing(newValue);
+			}
+		});
+		return antiAliasingCheckBox;
 	}
 
 	private Node createDrawableList() {

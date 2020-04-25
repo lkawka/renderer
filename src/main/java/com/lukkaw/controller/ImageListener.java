@@ -1,7 +1,7 @@
 package com.lukkaw.controller;
 
-import com.lukkaw.image.FastImage;
+import com.lukkaw.image.Canvas;
 
 public interface ImageListener {
-	void draw(FastImage image);
+	void draw(Canvas image);
 }
