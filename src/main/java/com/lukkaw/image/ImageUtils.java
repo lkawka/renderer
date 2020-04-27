@@ -37,6 +37,11 @@ public class ImageUtils {
 				(int) (color1.getB() * (1 - t) + color2.getB() * t));
 	}
 
+	public static int det(Point a, Point b, Point c) {
+		return a.getX() * b.getY() - a.getX() * c.getY() - a.getY() * b.getX() + a.getY() * c.getX() + b.getX() * c
+				.getY() - b.getY() * c.getX();
+	}
+
 	public static Optional<? extends Point> linePoint(PointPair line, Point point) {
 		return linePoints(line).stream().filter(linePoint -> inVicinity(new PointPair(linePoint, point))).findFirst();
 	}
@@ -58,9 +63,11 @@ public class ImageUtils {
 		int dE = 2 * dy;
 		int dNE = 2 * (dy - dx);
 
-		zone1Points.add(new Point(x1, y1));
-		zone1Points.add(new Point(x2, y2));
+		//		zone1Points.add(new Point(x1, y1));
+		//		zone1Points.add(new Point(x2, y2));
 		while (x1 < x2) {
+			zone1Points.add(new Point(x1, y1));
+			zone1Points.add(new Point(x2, y2));
 			++x1;
 			--x2;
 			if (d < 0)
@@ -70,8 +77,6 @@ public class ImageUtils {
 				++y1;
 				--y2;
 			}
-			zone1Points.add(new Point(x1, y1));
-			zone1Points.add(new Point(x2, y2));
 		}
 
 		return lineTransform.convertToOriginalZone(zone1Points);

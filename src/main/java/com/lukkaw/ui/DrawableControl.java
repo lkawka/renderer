@@ -6,11 +6,10 @@ import com.lukkaw.drawable.CircleDrawable;
 import com.lukkaw.drawable.Drawable;
 import com.lukkaw.drawable.DrawableState;
 import com.lukkaw.drawable.LineDrawable;
+import com.lukkaw.drawable.PartCircleDrawable;
 import com.lukkaw.drawable.PolygonDrawable;
 import com.lukkaw.image.Color;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -47,7 +46,7 @@ public class DrawableControl implements DrawableListener {
 
 	public Node createUI() {
 		VBox vBox = createVBox();
-		vBox.setPrefWidth(196);
+		vBox.setPrefWidth(320);
 		vBox.getChildren().addAll(createNewDrawableMenu(), createAntiAliasingControl(), createDrawableList(),
 				createSingleDrawableControl());
 		return vBox;
@@ -104,15 +103,17 @@ public class DrawableControl implements DrawableListener {
 		Button addLineButton = new Button("Line");
 		Button addCircleButton = new Button("Circle");
 		Button addPolygonButton = new Button("Polygon");
+		Button addPartCircleButton = new Button("Part Circle");
 
 		addLineButton.setOnAction(e -> controller.addDrawable(new LineDrawable()));
 		addCircleButton.setOnAction(e -> controller.addDrawable(new CircleDrawable()));
 		addPolygonButton.setOnAction(e -> controller.addDrawable(new PolygonDrawable()));
+		addPartCircleButton.setOnAction(e -> controller.addDrawable(new PartCircleDrawable()));
 
 		HBox hBox = new HBox();
 		hBox.setSpacing(4);
 		hBox.setAlignment(Pos.CENTER);
-		hBox.getChildren().addAll(addLineButton, addCircleButton, addPolygonButton);
+		hBox.getChildren().addAll(addLineButton, addCircleButton, addPolygonButton, addPartCircleButton);
 
 		VBox vBox = createVBox();
 		vBox.getChildren().addAll(label, hBox);
@@ -232,6 +233,9 @@ public class DrawableControl implements DrawableListener {
 			break;
 		case POLYGON:
 			name = "Polygon #";
+			break;
+		case PART_CIRCLE:
+			name = "Part circle #";
 			break;
 		default:
 			name = "Shape #";
