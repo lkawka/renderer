@@ -75,7 +75,7 @@ public class ImageUtils {
 		int dE = 2 * dy;
 		int dNE = 2 * (dy - dx);
 
-		while (x1 < x2) {
+		while (x1 <= x2) {
 			consumer.accept(lineTransform.convertToOriginalZone(new Point(x1, y1)));
 			consumer.accept(lineTransform.convertToOriginalZone(new Point(x2, y2)));
 			++x1;
