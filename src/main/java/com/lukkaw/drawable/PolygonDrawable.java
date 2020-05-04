@@ -1,12 +1,10 @@
 package com.lukkaw.drawable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Canvas;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
@@ -20,14 +18,13 @@ import lombok.Setter;
 @Setter
 public class PolygonDrawable extends Drawable {
 
-	private Polygon polygon;
-	private MovingState movingState;
+	private final Polygon polygon = new Polygon();
+	private MovingState movingState = MovingState.NOTHING_SELECTED;
 	private Point selectedPoint;
 	private PointPair selectedLine;
 
 	public PolygonDrawable() {
-		super(ShapeType.POLYGON, "Polygon");
-		polygon = new Polygon(new ArrayList<>(), 1, Color.BLACK);
+		super(ShapeType.POLYGON);
 	}
 
 	@Override
@@ -75,7 +72,7 @@ public class PolygonDrawable extends Drawable {
 				if (vertexSelected(click)) {
 					return;
 				}
-				if (lineSelected(click)) {
+				if (edgeSelected(click)) {
 					return;
 				}
 				moveEntirePolygon(click);
@@ -104,11 +101,11 @@ public class PolygonDrawable extends Drawable {
 		return false;
 	}
 
-	private boolean lineSelected(Point click) {
-		return polygon.getLines().stream().anyMatch(line -> lineSelected(line, click));
+	private boolean edgeSelected(Point click) {
+		return polygon.getLines().stream().anyMatch(line -> edgeSelected(line, click));
 	}
 
-	private boolean lineSelected(PointPair line, Point click) {
+	private boolean edgeSelected(PointPair line, Point click) {
 		Optional<? extends Point> pointOnLine = ImageUtils.linePoint(line, click);
 		if (pointOnLine.isPresent()) {
 			movingState = MovingState.LINE_SELECTED;

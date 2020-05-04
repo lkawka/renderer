@@ -2,18 +2,16 @@ package com.lukkaw.drawable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Canvas;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.shape.PartCircle;
 import com.lukkaw.shape.Shape;
 
 public class PartCircleDrawable extends Drawable {
-	PartCircle partCircle;
+	private final PartCircle partCircle = new PartCircle();
 
 	public PartCircleDrawable() {
-		super(ShapeType.PART_CIRCLE, "Part Circle");
-		partCircle = new PartCircle(null, null, null, null, 1, Color.BLACK);
+		super(ShapeType.PART_CIRCLE);
 	}
 
 	public void draw(Canvas canvas) {

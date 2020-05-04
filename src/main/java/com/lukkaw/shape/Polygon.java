@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
 
@@ -17,11 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Polygon extends Shape {
 	private List<Point> points = new ArrayList<>();
-
-	public Polygon(List<Point> points, Integer brush, Color color) {
-		super(color, brush);
-		this.points.addAll(points);
-	}
 
 	public void add(Point point) {
 		points.add(point);

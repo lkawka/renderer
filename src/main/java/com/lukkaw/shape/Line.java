@@ -1,7 +1,6 @@
 package com.lukkaw.shape;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
 
@@ -13,12 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Line extends Shape {
-	private PointPair pair;
-
-	public Line(PointPair pair, Integer brush, Color color) {
-		super(color, brush);
-		this.pair = pair;
-	}
+	private PointPair pair = new PointPair();
 
 	@JsonIgnore
 	public Point getPoint1() {

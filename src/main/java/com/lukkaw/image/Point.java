@@ -10,4 +10,9 @@ import lombok.NoArgsConstructor;
 public class Point {
 	private Integer x;
 	private Integer y;
+
+	public Point(Point point) {
+		x = point.x;
+		y = point.y;
+	}
 }

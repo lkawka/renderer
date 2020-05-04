@@ -1,7 +1,6 @@
 package com.lukkaw.drawable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.Canvas;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
@@ -15,12 +14,11 @@ import lombok.Setter;
 @Setter
 public class CircleDrawable extends Drawable {
 
-	private Circle circle;
+	private Circle circle = new Circle();
 	private boolean changingRadius = false;
 
 	public CircleDrawable() {
-		super(ShapeType.CIRCLE, "Circle");
-		circle = new Circle(null, null, 1, Color.BLACK);
+		super(ShapeType.CIRCLE);
 	}
 
 	@Override

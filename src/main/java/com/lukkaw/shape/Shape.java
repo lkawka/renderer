@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public abstract class Shape {
-	protected Color color;
-	protected Integer brush;
+	protected Color color = Color.BLACK;
+	protected Integer brush = 1;
 	protected Long priority = 1L;
 
 	protected Shape(Color color, Integer brush) {

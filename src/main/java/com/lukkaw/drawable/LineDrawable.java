@@ -1,11 +1,9 @@
 package com.lukkaw.drawable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lukkaw.image.Color;
 import com.lukkaw.image.Canvas;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
-import com.lukkaw.image.PointPair;
 import com.lukkaw.shape.Line;
 import com.lukkaw.shape.Shape;
 
@@ -16,12 +14,11 @@ import lombok.Setter;
 @Setter
 public class LineDrawable extends Drawable {
 
-	private Line line;
+	private final Line line = new Line();
 	private MovingState movingState = MovingState.NO_POINT_SELECTED;
 
 	public LineDrawable() {
-		super(ShapeType.LINE, "Line");
-		line = new Line(new PointPair(), 1, Color.BLACK);
+		super(ShapeType.LINE);
 	}
 
 	@Override

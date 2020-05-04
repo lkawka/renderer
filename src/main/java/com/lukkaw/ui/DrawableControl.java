@@ -8,6 +8,7 @@ import com.lukkaw.drawable.DrawableState;
 import com.lukkaw.drawable.LineDrawable;
 import com.lukkaw.drawable.PartCircleDrawable;
 import com.lukkaw.drawable.PolygonDrawable;
+import com.lukkaw.drawable.RectangleDrawable;
 import com.lukkaw.image.Color;
 
 import javafx.collections.FXCollections;
@@ -104,19 +105,26 @@ public class DrawableControl implements DrawableListener {
 		Button addCircleButton = new Button("Circle");
 		Button addPolygonButton = new Button("Polygon");
 		Button addPartCircleButton = new Button("Part Circle");
+		Button addRectangleButton = new Button("Rectangle");
 
 		addLineButton.setOnAction(e -> controller.addDrawable(new LineDrawable()));
 		addCircleButton.setOnAction(e -> controller.addDrawable(new CircleDrawable()));
 		addPolygonButton.setOnAction(e -> controller.addDrawable(new PolygonDrawable()));
 		addPartCircleButton.setOnAction(e -> controller.addDrawable(new PartCircleDrawable()));
+		addRectangleButton.setOnAction(e -> controller.addDrawable(new RectangleDrawable()));
 
-		HBox hBox = new HBox();
-		hBox.setSpacing(4);
-		hBox.setAlignment(Pos.CENTER);
-		hBox.getChildren().addAll(addLineButton, addCircleButton, addPolygonButton, addPartCircleButton);
+		HBox buttonRow1 = new HBox();
+		buttonRow1.setSpacing(4);
+		buttonRow1.setAlignment(Pos.CENTER);
+		buttonRow1.getChildren().addAll(addLineButton, addCircleButton, addPolygonButton);
+
+		HBox buttonRow2 = new HBox();
+		buttonRow2.setSpacing(4);
+		buttonRow2.setAlignment(Pos.CENTER);
+		buttonRow2.getChildren().addAll(addPartCircleButton, addRectangleButton);
 
 		VBox vBox = createVBox();
-		vBox.getChildren().addAll(label, hBox);
+		vBox.getChildren().addAll(label, buttonRow1, buttonRow2);
 
 		return vBox;
 	}
@@ -223,25 +231,8 @@ public class DrawableControl implements DrawableListener {
 	}
 
 	private void setDrawableName(Drawable drawable) {
-		String name;
-		switch (drawable.getType()) {
-		case LINE:
-			name = "Line #";
-			break;
-		case CIRCLE:
-			name = "Circle #";
-			break;
-		case POLYGON:
-			name = "Polygon #";
-			break;
-		case PART_CIRCLE:
-			name = "Part circle #";
-			break;
-		default:
-			name = "Shape #";
-		}
 		drawablesCount += 1;
-		drawable.setName(name + drawablesCount);
+		drawable.setName(drawable.getType().toString() + " #" + drawablesCount);
 	}
 
 	private VBox createVBox() {

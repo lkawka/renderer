@@ -21,6 +21,7 @@ import lombok.Setter;
 		@JsonSubTypes.Type(value = LineDrawable.class, name = "LINE"),
 		@JsonSubTypes.Type(value = CircleDrawable.class, name = "CIRCLE"),
 		@JsonSubTypes.Type(value = PolygonDrawable.class, name = "POLYGON"),
+		@JsonSubTypes.Type(value = RectangleDrawable.class, name = "RECTANGLE"),
 })
 public abstract class Drawable {
 
@@ -30,9 +31,8 @@ public abstract class Drawable {
 	@JsonIgnore
 	private Boolean isActive = false;
 
-	protected Drawable(ShapeType type, String name) {
+	protected Drawable(ShapeType type) {
 		this.type = type;
-		this.name = name;
 	}
 
 	public void draw(Canvas canvas) {
