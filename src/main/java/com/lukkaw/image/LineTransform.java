@@ -6,8 +6,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 
 public class LineTransform {
-	private PointPair line;
-	private int zone;
+	private final PointPair line;
+	private final int zone;
 
 	public LineTransform(PointPair line) {
 		if (line.getPoint1().getX() > line.getPoint2().getX()) {

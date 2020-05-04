@@ -1,7 +1,5 @@
 package com.lukkaw.drawable;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Canvas;
 import com.lukkaw.image.Color;
@@ -59,16 +57,15 @@ public class PartCircleDrawable extends Drawable {
 
 	public void drawPartCircle(Canvas canvas) {
 		int det = ImageUtils.det(partCircle.getA(), partCircle.getB(), partCircle.getC());
-		List<Point> points = ImageUtils.circlePoints(partCircle.getA(), partCircle.getRadius());
 		if (det <= 0) {
-			points.forEach(point -> {
+			ImageUtils.circlePoints(partCircle.getA(), partCircle.getRadius(), point -> {
 				if (ImageUtils.det(partCircle.getA(), partCircle.getB(), point) > 0 ||
 						ImageUtils.det(partCircle.getA(), partCircle.getC(), point) < 0) {
 					canvas.drawPoint(point, partCircle.getColor(), partCircle.getBrush());
 				}
 			});
 		} else {
-			points.forEach(point -> {
+			ImageUtils.circlePoints(partCircle.getA(), partCircle.getRadius(), point -> {
 				if (ImageUtils.det(partCircle.getA(), partCircle.getB(), point) > 0 &&
 						ImageUtils.det(partCircle.getA(), partCircle.getC(), point) < 0) {
 					canvas.drawPoint(point, partCircle.getColor(), partCircle.getBrush());

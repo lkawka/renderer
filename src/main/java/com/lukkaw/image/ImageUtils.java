@@ -6,6 +6,8 @@ import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class ImageUtils {
 	private static final int VICINITY = 5;
@@ -28,7 +30,13 @@ public class ImageUtils {
 	}
 
 	public static boolean inVicinity(Point center, int radius, Point point) {
-		return circlePoints(center, radius).stream().anyMatch(circlePoint -> inVicinity(circlePoint, point));
+		AtomicBoolean inVicinity = new AtomicBoolean(false);
+		circlePoints(center, radius, circlePoint -> {
+			if (inVicinity(circlePoint, point)) {
+				inVicinity.set(true);
+			}
+		});
+		return inVicinity.get();
 	}
 
 	public static Color lerp(Color color1, Color color2, double t) {
@@ -42,11 +50,17 @@ public class ImageUtils {
 				.getY() - b.getY() * c.getX();
 	}
 
-	public static Optional<? extends Point> linePoint(PointPair line, Point point) {
-		return linePoints(line).stream().filter(linePoint -> inVicinity(new PointPair(linePoint, point))).findFirst();
+	public static Optional<Point> linePoint(PointPair line, Point point) {
+		List<Point> result = new ArrayList<>();
+		linePoints(line, linePoint -> {
+			if (inVicinity(new PointPair(linePoint, point))) {
+				result.add(linePoint);
+			}
+		});
+		return result.stream().findFirst();
 	}
 
-	public static List<? extends Point> linePoints(PointPair line) {
+	public static void linePoints(PointPair line, Consumer<Point> consumer) {
 		LineTransform lineTransform = new LineTransform(line);
 		PointPair transformedLine = lineTransform.getLineInZone1();
 
@@ -55,19 +69,15 @@ public class ImageUtils {
 		int x2 = transformedLine.getPoint2().getX();
 		int y2 = transformedLine.getPoint2().getY();
 
-		List<Point> zone1Points = new ArrayList<>();
-
 		int dx = x2 - x1;
 		int dy = y2 - y1;
 		int d = 2 * dy - dx;
 		int dE = 2 * dy;
 		int dNE = 2 * (dy - dx);
 
-		//		zone1Points.add(new Point(x1, y1));
-		//		zone1Points.add(new Point(x2, y2));
 		while (x1 < x2) {
-			zone1Points.add(new Point(x1, y1));
-			zone1Points.add(new Point(x2, y2));
+			consumer.accept(lineTransform.convertToOriginalZone(new Point(x1, y1)));
+			consumer.accept(lineTransform.convertToOriginalZone(new Point(x2, y2)));
 			++x1;
 			--x2;
 			if (d < 0)
@@ -78,19 +88,16 @@ public class ImageUtils {
 				--y2;
 			}
 		}
-
-		return lineTransform.convertToOriginalZone(zone1Points);
 	}
 
-	public static List<Point> circlePoints(Point center, int radius) {
+	public static void circlePoints(Point center, int radius, Consumer<Point> consumer) {
 		int dE = 3;
 		int dSE = 5 - 2 * radius;
 		int d = 1 - radius;
 		int i = 0;
 		int j = radius;
 
-		List<Point> points = new ArrayList<>(octanCirclePoints(center, i, j));
-
+		octanCirclePoints(center, i, j, consumer);
 		while (j > i) {
 			if (d < 0) {
 				d += dE;
@@ -103,21 +110,18 @@ public class ImageUtils {
 				--j;
 			}
 			++i;
-			points.addAll(octanCirclePoints(center, i, j));
+			octanCirclePoints(center, i, j, consumer);
 		}
-		return points;
 	}
 
-	private static List<Point> octanCirclePoints(Point center, int x, int y) {
-		List<Point> points = new ArrayList<>();
-		points.add(new Point(center.getX() + x, center.getY() + y));
-		points.add(new Point(center.getX() + x, center.getY() - y));
-		points.add(new Point(center.getX() - x, center.getY() + y));
-		points.add(new Point(center.getX() - x, center.getY() - y));
-		points.add(new Point(center.getX() + y, center.getY() + x));
-		points.add(new Point(center.getX() - y, center.getY() + x));
-		points.add(new Point(center.getX() + y, center.getY() - x));
-		points.add(new Point(center.getX() - y, center.getY() - x));
-		return points;
+	private static void octanCirclePoints(Point center, int x, int y, Consumer<Point> consumer) {
+		consumer.accept(new Point(center.getX() + x, center.getY() + y));
+		consumer.accept(new Point(center.getX() + x, center.getY() - y));
+		consumer.accept(new Point(center.getX() - x, center.getY() + y));
+		consumer.accept(new Point(center.getX() - x, center.getY() - y));
+		consumer.accept(new Point(center.getX() + y, center.getY() + x));
+		consumer.accept(new Point(center.getX() - y, center.getY() + x));
+		consumer.accept(new Point(center.getX() + y, center.getY() - x));
+		consumer.accept(new Point(center.getX() - y, center.getY() - x));
 	}
 }
