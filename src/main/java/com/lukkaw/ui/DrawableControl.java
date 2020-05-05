@@ -1,5 +1,8 @@
 package com.lukkaw.ui;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.lukkaw.controller.Controller;
 import com.lukkaw.controller.DrawableListener;
 import com.lukkaw.drawable.CircleDrawable;
@@ -9,7 +12,10 @@ import com.lukkaw.drawable.LineDrawable;
 import com.lukkaw.drawable.PartCircleDrawable;
 import com.lukkaw.drawable.PolygonDrawable;
 import com.lukkaw.drawable.RectangleDrawable;
+import com.lukkaw.drawable.ShapeType;
 import com.lukkaw.image.Color;
+import com.lukkaw.shape.Polygon;
+import com.lukkaw.shape.Rectangle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,33 +27,43 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class DrawableControl implements DrawableListener {
+	private static final File INITIAL_DIR = new File("src/main/resources");
 
 	boolean cancelMovingMode = false;
-	private Controller controller;
+	private final Controller controller;
+	private final Stage stage;
 	private Integer drawablesCount = 0;
-	private ListView<Drawable> listView;
-	private ObservableList<Drawable> drawableListCells = FXCollections.observableArrayList();
+	private final ObservableList<Drawable> allDrawables = FXCollections.observableArrayList();
+	private ListView<Drawable> allShapesListView;
 	private Label selectedLabel;
 	private Button moveShapeButton;
 	private ColorPicker selectedColorPicker;
 	private VBox selectedBox;
 	private TextField thicknessField;
+	private Node fillControl;
+	private Node clipControl;
 
-	public DrawableControl(Controller controller) {
+	public DrawableControl(Controller controller, Stage stage) {
 		this.controller = controller;
+		this.stage = stage;
 
 		controller.addListener(this);
 	}
 
 	public Node createUI() {
 		VBox vBox = createVBox();
-		vBox.setPrefWidth(320);
+		vBox.setPrefWidth(300);
+		vBox.setPadding(new Insets(4));
 		vBox.getChildren().addAll(createNewDrawableMenu(), createAntiAliasingControl(), createDrawableList(),
 				createSingleDrawableControl());
 		return vBox;
@@ -56,12 +72,12 @@ public class DrawableControl implements DrawableListener {
 	@Override
 	public void drawableAdded(Drawable drawable) {
 		setDrawableName(drawable);
-		drawableListCells.addAll(drawable);
+		allDrawables.addAll(drawable);
 	}
 
 	@Override
 	public void drawableRemoved(Drawable drawable) {
-		if (!drawableListCells.remove(drawable)) {
+		if (!allDrawables.remove(drawable)) {
 			throw new RuntimeException("Cell for removal not found: " + drawable);
 		}
 	}
@@ -70,11 +86,14 @@ public class DrawableControl implements DrawableListener {
 	public void activeSet(Drawable drawable) {
 		selectedBox.setDisable(drawable == null);
 		if (drawable != null) {
-			listView.getSelectionModel().select(drawable);
+			allShapesListView.getSelectionModel().select(drawable);
 
 			selectedLabel.setText(drawable.toString());
 
-			if (drawable.getState() == DrawableState.DONE) {
+			if (drawable.getType() == ShapeType.PART_CIRCLE) {
+				moveShapeButton.setText("Move");
+				moveShapeButton.setDisable(true);
+			} else if (drawable.getState() == DrawableState.DONE) {
 				moveShapeButton.setText("Move");
 				moveShapeButton.setDisable(false);
 				cancelMovingMode = false;
@@ -88,11 +107,19 @@ public class DrawableControl implements DrawableListener {
 				cancelMovingMode = true;
 			}
 
+			if ((drawable.getType() != ShapeType.POLYGON) || (drawable.getState() == DrawableState.DRAWING)) {
+				fillControl.setDisable(true);
+				clipControl.setDisable(true);
+			} else {
+				fillControl.setDisable(false);
+				clipControl.setDisable(false);
+			}
+
 			selectedColorPicker.setValue(drawable.getShape().getColor().cast());
 
 			thicknessField.setText(drawable.getShape().getBrush().toString());
 		} else {
-			listView.getSelectionModel().clearSelection();
+			allShapesListView.getSelectionModel().clearSelection();
 
 			selectedLabel.setText("");
 		}
@@ -113,27 +140,21 @@ public class DrawableControl implements DrawableListener {
 		addPartCircleButton.setOnAction(e -> controller.addDrawable(new PartCircleDrawable()));
 		addRectangleButton.setOnAction(e -> controller.addDrawable(new RectangleDrawable()));
 
-		HBox buttonRow1 = new HBox();
-		buttonRow1.setSpacing(4);
-		buttonRow1.setAlignment(Pos.CENTER);
-		buttonRow1.getChildren().addAll(addLineButton, addCircleButton, addPolygonButton);
-
-		HBox buttonRow2 = new HBox();
-		buttonRow2.setSpacing(4);
-		buttonRow2.setAlignment(Pos.CENTER);
-		buttonRow2.getChildren().addAll(addPartCircleButton, addRectangleButton);
+		HBox buttonRow1 = createHBox();
+		buttonRow1.getChildren()
+				.addAll(addLineButton, addCircleButton, addPolygonButton, addPartCircleButton, addRectangleButton);
 
 		VBox vBox = createVBox();
-		vBox.getChildren().addAll(label, buttonRow1, buttonRow2);
+		vBox.getChildren().addAll(label, buttonRow1);
 
 		return vBox;
 	}
 
 	private Node createAntiAliasingControl() {
-		CheckBox antiAliasingCheckBox = new CheckBox("Anti aliasing");
+		CheckBox antiAliasingCheckBox = new CheckBox("Enable anti aliasing");
 		antiAliasingCheckBox.setSelected(controller.getAntiAliasing());
 		antiAliasingCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			if(newValue != null && oldValue != newValue) {
+			if (newValue != null && oldValue != newValue) {
 				controller.setAntiAliasing(newValue);
 			}
 		});
@@ -143,19 +164,19 @@ public class DrawableControl implements DrawableListener {
 	private Node createDrawableList() {
 		Label label = new Label("Shapes");
 
-		listView = new ListView<>();
-		listView.setPrefSize(40, 100);
-		drawableListCells.addAll(controller.getDrawables());
-		listView.setItems(drawableListCells);
-		listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+		allShapesListView = new ListView<>();
+		allShapesListView.setPrefSize(30, 100);
+		allDrawables.addAll(controller.getDrawables());
+		allShapesListView.setItems(allDrawables);
+		allShapesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		allShapesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null && newValue != oldValue) {
 				controller.setActive(observable.getValue());
 			}
 		});
 
 		VBox vBox = createVBox();
-		vBox.getChildren().addAll(label, listView);
+		vBox.getChildren().addAll(label, allShapesListView);
 		return vBox;
 	}
 
@@ -203,31 +224,149 @@ public class DrawableControl implements DrawableListener {
 			}
 		});
 
-		HBox buttonsBox = new HBox();
-		buttonsBox.setSpacing(4);
-		buttonsBox.setAlignment(Pos.CENTER);
-		buttonsBox.getChildren().addAll(moveShapeButton, removeShapeButton);
+		fillControl = createFillControl();
+		clipControl = createClipControl();
 
-		HBox thicknessBox = new HBox();
-		thicknessBox.setSpacing(8);
-		thicknessBox.setAlignment(Pos.CENTER);
-		thicknessBox.getChildren().addAll(thicknessLabel, thicknessField);
+		HBox row1 = createHBox();
+		row1.getChildren().addAll(moveShapeButton, removeShapeButton, selectedColorPicker);
+
+		HBox row2 = createHBox();
+		row2.setAlignment(Pos.CENTER_LEFT);
+		row2.getChildren().addAll(thicknessLabel, thicknessField);
+
+		HBox row3 = createHBox();
+		row3.setSpacing(16);
+		row3.getChildren().addAll(fillControl, clipControl);
 
 		selectedBox = createVBox();
 		selectedBox.setDisable(true);
-		selectedBox.getChildren().addAll(selectedLabel, buttonsBox, selectedColorPicker, thicknessBox);
+		selectedBox.getChildren().addAll(selectedLabel, row1, row2, row3);
 		return selectedBox;
+	}
+
+	private Node createFillControl() {
+		Label fillLabel = new Label("Fill");
+
+		RadioButton noFillButton = new RadioButton("None");
+		RadioButton colorFillButton = new RadioButton("Color");
+		RadioButton imageFillButton = new RadioButton("Image");
+
+		ToggleGroup fillToggleGroup = new ToggleGroup();
+		noFillButton.setToggleGroup(fillToggleGroup);
+		colorFillButton.setToggleGroup(fillToggleGroup);
+		imageFillButton.setToggleGroup(fillToggleGroup);
+		fillToggleGroup.selectToggle(noFillButton);
+
+		Label selectedImageLabel = new Label("No image selected");
+		Button selectFillImageButton = new Button("Select image");
+
+		VBox fillImageSelectorRow = createVBox();
+		fillImageSelectorRow.setDisable(true);
+		fillImageSelectorRow.setMaxWidth(150);
+		fillImageSelectorRow.getChildren().addAll(selectedImageLabel, selectFillImageButton);
+
+		noFillButton.setOnAction(e -> {
+			fillImageSelectorRow.setDisable(true);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.NONE, null);
+			controller.refresh();
+		});
+
+		colorFillButton.setOnAction(e -> {
+			fillImageSelectorRow.setDisable(true);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.COLOR, null);
+			controller.refresh();
+		});
+
+		imageFillButton.setOnAction(e -> {
+			fillImageSelectorRow.setDisable(false);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+			controller.refresh();
+		});
+
+		selectFillImageButton.setOnAction(e -> {
+			File imageFile = loadImage();
+			if (imageFile != null) {
+				try {
+					selectedImageLabel.setText(imageFile.getName());
+					((Polygon) getSelectedDrawable().getShape())
+							.setFill(Polygon.FillType.NONE, imageFile.getCanonicalPath());
+				} catch (IOException ioException) {
+					selectedImageLabel.setText("No image selected");
+					((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+				}
+				controller.refresh();
+			} else {
+				selectedImageLabel.setText("No image selected");
+				((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+			}
+		});
+
+		VBox box = createVBox();
+		box.getChildren().addAll(fillLabel, noFillButton, colorFillButton, imageFillButton, fillImageSelectorRow);
+		return box;
+	}
+
+	private Node createClipControl() {
+		CheckBox clipCheckBox = new CheckBox("Clip");
+
+		ListView<Drawable> clipListView = new ListView<>(
+				allDrawables.filtered(drawable -> drawable.getType() == ShapeType.RECTANGLE));
+		clipListView.setDisable(!clipCheckBox.isSelected());
+		clipListView.setPrefSize(150, 150);
+
+		clipCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null && oldValue != newValue) {
+				clipListView.setDisable(!newValue);
+				Polygon selectedPolygon = (Polygon) getSelectedDrawable().getShape();
+				if (newValue) {
+					if (clipListView.getSelectionModel().getSelectedItem() != null) {
+						Rectangle clippingRectangle = (Rectangle) clipListView.getSelectionModel().getSelectedItem()
+								.getShape();
+						selectedPolygon.clip(clippingRectangle);
+					} else {
+						selectedPolygon.clip(null);
+					}
+				} else {
+					selectedPolygon.clip(null);
+				}
+			}
+		});
+
+		clipListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		clipListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null && newValue != oldValue) {
+				Polygon selectedPolygon = (Polygon) getSelectedDrawable().getShape();
+				Rectangle clippingRectangle = (Rectangle) clipListView.getSelectionModel().getSelectedItem().getShape();
+				selectedPolygon.clip(clippingRectangle);
+				controller.refresh();
+			}
+		});
+
+		VBox box = createVBox();
+		box.getChildren().addAll(clipCheckBox, clipListView);
+		return box;
+	}
+
+	private File loadImage() {
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Image files", "*.jpg", "*.jpeg",
+				"*.png");
+		fileChooser.getExtensionFilters().add(extensionFilter);
+		fileChooser.setTitle("Open shapes");
+		fileChooser.setInitialDirectory(INITIAL_DIR);
+
+		return fileChooser.showOpenDialog(stage);
 	}
 
 	private Drawable getSelectedDrawable() {
 		if (isAnyDrawableSelected()) {
-			return listView.getSelectionModel().getSelectedItem();
+			return allShapesListView.getSelectionModel().getSelectedItem();
 		}
 		throw new RuntimeException("No drawable selected");
 	}
 
 	private boolean isAnyDrawableSelected() {
-		return listView != null && listView.getSelectionModel().getSelectedItem() != null;
+		return allShapesListView != null && allShapesListView.getSelectionModel().getSelectedItem() != null;
 	}
 
 	private void setDrawableName(Drawable drawable) {
@@ -236,10 +375,16 @@ public class DrawableControl implements DrawableListener {
 	}
 
 	private VBox createVBox() {
-		VBox vBox = new VBox();
-		vBox.setSpacing(8);
-		vBox.setPadding(new Insets(8));
-		vBox.setAlignment(Pos.CENTER);
-		return vBox;
+		VBox box = new VBox();
+		box.setSpacing(8);
+		box.setAlignment(Pos.TOP_LEFT);
+		return box;
+	}
+
+	private HBox createHBox() {
+		HBox box = new HBox();
+		box.setSpacing(2);
+		box.setAlignment(Pos.TOP_LEFT);
+		return box;
 	}
 }

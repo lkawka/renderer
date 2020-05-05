@@ -64,14 +64,14 @@ public class Canvas {
 
 	public void drawLine(PointPair line, Color color, int brush) {
 		if (!useAntiAliasing) {
-			ImageUtils.linePoints(line, linePoint -> drawPoint(linePoint, color, brush));
+			ImageUtils.acceptLinePoints(line, linePoint -> drawPoint(linePoint, color, brush));
 		} else {
 			drawAntiAliasedLine(line, color, brush);
 		}
 	}
 
 	public void drawCircle(Point center, int radius, Color color, int brush) {
-		ImageUtils.circlePoints(center, radius, point -> drawPoint(point, color, brush));
+		ImageUtils.acceptCirclePoints(center, radius, point -> drawPoint(point, color, brush));
 	}
 
 	public Image getImage() {

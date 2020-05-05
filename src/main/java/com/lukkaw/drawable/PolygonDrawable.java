@@ -2,6 +2,7 @@ package com.lukkaw.drawable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Canvas;
@@ -35,20 +36,13 @@ public class PolygonDrawable extends Drawable {
 			if (points.size() == 1) {
 				canvas.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
 			} else {
-				polygon.getLinesWithoutLast().forEach(line ->
-						canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
+				polygon.acceptLinesWithoutLast(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
 			}
 			break;
 		case MOVING:
-			if (points.size() == 1) {
-				canvas.drawPoint(points.get(0), polygon.getColor(), polygon.getBrush());
-			} else {
-				polygon.getLines().forEach(line ->
-						canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
-			}
-			break;
 		case DONE:
-			polygon.getLines().forEach(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
+			polygon.acceptLines(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
+			break;
 		}
 	}
 
@@ -102,7 +96,13 @@ public class PolygonDrawable extends Drawable {
 	}
 
 	private boolean edgeSelected(Point click) {
-		return polygon.getLines().stream().anyMatch(line -> edgeSelected(line, click));
+		AtomicBoolean selected = new AtomicBoolean(false);
+		polygon.acceptLines(line -> {
+			if (edgeSelected(line, click)) {
+				selected.set(true);
+			}
+		});
+		return selected.get();
 	}
 
 	private boolean edgeSelected(PointPair line, Point click) {

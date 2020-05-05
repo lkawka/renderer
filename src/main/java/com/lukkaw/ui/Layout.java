@@ -21,7 +21,7 @@ public class Layout {
 
 		AppToolbar toolbar = new AppToolbar(controller, stage);
 		DrawingCanvas drawingCanvas = new DrawingCanvas(config, controller);
-		DrawableControl drawableControl = new DrawableControl(controller);
+		DrawableControl drawableControl = new DrawableControl(controller, stage);
 
 		borderPane.setTop(toolbar.createUI());
 		borderPane.setCenter(drawingCanvas.createUI());

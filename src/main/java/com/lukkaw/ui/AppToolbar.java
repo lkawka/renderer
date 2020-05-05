@@ -23,8 +23,8 @@ public class AppToolbar {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final File INITIAL_DIR = new File("src/main/resources");
 
-	private Controller controller;
-	private Stage stage;
+	private final Controller controller;
+	private final Stage stage;
 
 	public ToolBar createUI() {
 		ToolBar toolBar = new ToolBar();

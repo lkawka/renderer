@@ -14,10 +14,10 @@ import javafx.scene.input.MouseEvent;
 
 public class Controller {
 
-	private Config config;
-	private List<ImageListener> imageListeners = new ArrayList<>();
-	private List<DrawableListener> drawableListeners = new ArrayList<>();
-	private List<Drawable> drawables = new ArrayList<>();
+	private final Config config;
+	private final List<ImageListener> imageListeners = new ArrayList<>();
+	private final List<DrawableListener> drawableListeners = new ArrayList<>();
+	private final List<Drawable> drawables = new ArrayList<>();
 	private Drawable active;
 	private Long highestPriority = 1L;
 	private Boolean useAntiAliasing = false;

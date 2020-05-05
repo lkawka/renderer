@@ -35,7 +35,7 @@ public class RectangleDrawable extends Drawable {
 			break;
 		case MOVING:
 		case DONE:
-			rectangle.consumeLines(line -> canvas.drawLine(line, rectangle.getColor(), rectangle.getBrush()));
+			rectangle.acceptLines(line -> canvas.drawLine(line, rectangle.getColor(), rectangle.getBrush()));
 			break;
 		}
 
@@ -82,7 +82,7 @@ public class RectangleDrawable extends Drawable {
 
 	private boolean vertexSelected(Point click) {
 		AtomicBoolean selected = new AtomicBoolean(false);
-		rectangle.consumeVertices(point -> {
+		rectangle.acceptVertices(point -> {
 			if (ImageUtils.inVicinity(point, click)) {
 				setSelectedPoint(point);
 				setMovingState(MovingState.POINT_SELECTED);
@@ -95,7 +95,7 @@ public class RectangleDrawable extends Drawable {
 	private boolean edgeSelected(Point click) {
 		AtomicBoolean selected = new AtomicBoolean(false);
 
-		rectangle.consumeLines(line -> ImageUtils.linePoint(line, click).ifPresent(linePoint -> {
+		rectangle.acceptLines(line -> ImageUtils.linePoint(line, click).ifPresent(linePoint -> {
 			setSelectedPoint(linePoint);
 			setSelectedLine(line);
 			setMovingState(MovingState.LINE_SELECTED);

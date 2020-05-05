@@ -56,14 +56,14 @@ public class PartCircleDrawable extends Drawable {
 	public void drawPartCircle(Canvas canvas) {
 		int det = ImageUtils.det(partCircle.getA(), partCircle.getB(), partCircle.getC());
 		if (det <= 0) {
-			ImageUtils.circlePoints(partCircle.getA(), partCircle.getRadius(), point -> {
+			ImageUtils.acceptCirclePoints(partCircle.getA(), partCircle.getRadius(), point -> {
 				if (ImageUtils.det(partCircle.getA(), partCircle.getB(), point) > 0 ||
 						ImageUtils.det(partCircle.getA(), partCircle.getC(), point) < 0) {
 					canvas.drawPoint(point, partCircle.getColor(), partCircle.getBrush());
 				}
 			});
 		} else {
-			ImageUtils.circlePoints(partCircle.getA(), partCircle.getRadius(), point -> {
+			ImageUtils.acceptCirclePoints(partCircle.getA(), partCircle.getRadius(), point -> {
 				if (ImageUtils.det(partCircle.getA(), partCircle.getB(), point) > 0 &&
 						ImageUtils.det(partCircle.getA(), partCircle.getC(), point) < 0) {
 					canvas.drawPoint(point, partCircle.getColor(), partCircle.getBrush());

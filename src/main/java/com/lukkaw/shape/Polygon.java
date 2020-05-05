@@ -2,6 +2,7 @@ package com.lukkaw.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Point;
@@ -16,6 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Polygon extends Shape {
 	private List<Point> points = new ArrayList<>();
+	private FillType fillType = FillType.NONE;
+	private String fillImagePath;
 
 	public void add(Point point) {
 		points.add(point);
@@ -28,31 +31,35 @@ public class Polygon extends Shape {
 		}
 	}
 
-	@JsonIgnore
-	public List<PointPair> getLinesWithoutLast() {
-		List<PointPair> lines = new ArrayList<>();
+	public void acceptLinesWithoutLast(Consumer<PointPair> consumer) {
 		if (points.size() < 2) {
-			return lines;
+			return;
 		}
-
 		for (int i = 1; i < points.size(); i++) {
-			lines.add(new PointPair(points.get(i - 1), points.get(i)));
+			consumer.accept(new PointPair(points.get(i - 1), points.get(i)));
 		}
-
-		return lines;
 	}
 
-	@JsonIgnore
-	public List<PointPair> getLines() {
-		List<PointPair> lines = getLinesWithoutLast();
-
-		lines.add(new PointPair(points.get(points.size() - 1), points.get(0)));
-
-		return lines;
+	public void acceptLines(Consumer<PointPair> consumer) {
+		acceptLinesWithoutLast(consumer);
+		consumer.accept(new PointPair(points.get(points.size() - 1), points.get(0)));
 	}
 
 	@JsonIgnore
 	public Point getCenter() {
 		return points.get(0);
+	}
+
+	public void setFill(FillType fillType, String fillImagePath) {
+		this.fillType = fillType;
+		this.fillImagePath = fillImagePath;
+	}
+
+	public void clip(Rectangle rectangle) {
+
+	}
+
+	public enum FillType {
+		NONE, COLOR, IMAGE
 	}
 }

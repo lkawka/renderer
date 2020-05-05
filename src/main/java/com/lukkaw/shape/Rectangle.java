@@ -41,7 +41,7 @@ public class Rectangle extends Shape {
 		this.point2 = new Point(max(point1.getX(), point2.getX()), max(point1.getY(), point2.getY()));
 	}
 
-	public void consumeVertices(Consumer<Point> consumer) {
+	public void acceptVertices(Consumer<Point> consumer) {
 		int x1 = point1.getX();
 		int y1 = point1.getY();
 		int x2 = point2.getX();
@@ -53,7 +53,7 @@ public class Rectangle extends Shape {
 		consumer.accept(new Point(x2, y1));
 	}
 
-	public void consumeLines(Consumer<PointPair> consumer) {
+	public void acceptLines(Consumer<PointPair> consumer) {
 		int x1 = point1.getX();
 		int y1 = point1.getY();
 		int x2 = point2.getX();
