@@ -120,9 +120,9 @@ public class PolygonDrawable extends Drawable {
 	}
 
 	private void drawClippedEdges(Canvas canvas) {
-		ImageUtils.acceptClippingPoints(polygon.getPoints(), polygon.getClippedRectangle().getPoints(),
+		polygon.acceptLines(line -> ImageUtils.acceptClippingPoints(line, polygon.getClippedRectangle().getPoints(),
 				outsidePoint -> canvas.drawPoint(outsidePoint, polygon.getColor(), polygon.getBrush()),
-				insidePoint -> canvas.drawPoint(insidePoint, polygon.getColor().inverse(), polygon.getBrush()));
+				insidePoint -> canvas.drawPoint(insidePoint, polygon.getColor().inverse(), polygon.getBrush())));
 	}
 
 	private boolean vertexSelected(Point click) {

@@ -38,7 +38,6 @@ public class RectangleDrawable extends Drawable {
 			rectangle.acceptLines(line -> canvas.drawLine(line, rectangle.getColor(), rectangle.getBrush()));
 			break;
 		}
-
 	}
 
 	@Override
