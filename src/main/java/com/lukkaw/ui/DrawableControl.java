@@ -267,19 +267,19 @@ public class DrawableControl implements DrawableListener {
 
 		noFillButton.setOnAction(e -> {
 			fillImageSelectorRow.setDisable(true);
-			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.NONE, null);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.NONE);
 			controller.refresh();
 		});
 
 		colorFillButton.setOnAction(e -> {
 			fillImageSelectorRow.setDisable(true);
-			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.COLOR, null);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.COLOR);
 			controller.refresh();
 		});
 
 		imageFillButton.setOnAction(e -> {
 			fillImageSelectorRow.setDisable(false);
-			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+			((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE);
 			controller.refresh();
 		});
 
@@ -288,17 +288,16 @@ public class DrawableControl implements DrawableListener {
 			if (imageFile != null) {
 				try {
 					selectedImageLabel.setText(imageFile.getName());
-					((Polygon) getSelectedDrawable().getShape())
-							.setFill(Polygon.FillType.NONE, imageFile.getCanonicalPath());
+					((Polygon) getSelectedDrawable().getShape()).setFill(imageFile.getCanonicalPath());
 				} catch (IOException ioException) {
 					selectedImageLabel.setText("No image selected");
-					((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+					((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.NONE);
 				}
-				controller.refresh();
 			} else {
 				selectedImageLabel.setText("No image selected");
-				((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.IMAGE, null);
+				((Polygon) getSelectedDrawable().getShape()).setFill(Polygon.FillType.NONE);
 			}
+			controller.refresh();
 		});
 
 		VBox box = createVBox();
@@ -329,6 +328,7 @@ public class DrawableControl implements DrawableListener {
 				} else {
 					selectedPolygon.clip(null);
 				}
+				controller.refresh();
 			}
 		});
 

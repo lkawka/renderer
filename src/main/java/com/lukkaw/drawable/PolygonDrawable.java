@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Canvas;
+import com.lukkaw.image.Color;
+import com.lukkaw.image.FastImage;
 import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
@@ -24,6 +26,8 @@ public class PolygonDrawable extends Drawable {
 	private Point selectedPoint;
 	private PointPair selectedLine;
 
+	private FastImage selectedImage;
+
 	public PolygonDrawable() {
 		super(ShapeType.POLYGON);
 	}
@@ -41,7 +45,17 @@ public class PolygonDrawable extends Drawable {
 			break;
 		case MOVING:
 		case DONE:
-			polygon.acceptLines(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
+			if (polygon.getFillType() == Polygon.FillType.COLOR) {
+				drawColorFill(canvas);
+			} else if (polygon.getFillType() == Polygon.FillType.IMAGE && polygon.getFillImagePath() != null) {
+				drawImageFill(canvas);
+			}
+
+			if (polygon.getClippedRectangle() != null) {
+				drawClippedEdges(canvas);
+			} else {
+				polygon.acceptLines(line -> canvas.drawLine(line, polygon.getColor(), polygon.getBrush()));
+			}
 			break;
 		}
 	}
@@ -64,10 +78,10 @@ public class PolygonDrawable extends Drawable {
 			switch (movingState) {
 			case NOTHING_SELECTED:
 				if (vertexSelected(click)) {
-					return;
+					break;
 				}
 				if (edgeSelected(click)) {
-					return;
+					break;
 				}
 				moveEntirePolygon(click);
 				break;
@@ -82,6 +96,33 @@ public class PolygonDrawable extends Drawable {
 		case DONE:
 			break;
 		}
+	}
+
+	private void drawColorFill(Canvas canvas) {
+		ImageUtils.acceptFillPoints(polygon.getPoints(),
+				point -> canvas.drawPoint(point, polygon.getColor(), polygon.getBrush()));
+	}
+
+	private void drawImageFill(Canvas canvas) {
+		if (selectedImage == null || !selectedImage.getFilename().equals(polygon.getFillImagePath())) {
+			selectedImage = new FastImage(polygon.getFillImagePath());
+		}
+
+		int dx = polygon.getPoints().stream().mapToInt(Point::getX).min().getAsInt();
+		int dy = polygon.getPoints().stream().mapToInt(Point::getY).min().getAsInt();
+
+		ImageUtils.acceptFillPoints(polygon.getPoints(), point -> {
+			Color color = selectedImage.getPixel(point.getX() - dx, point.getY() - dy);
+			if (color != null) {
+				canvas.drawPoint(point, color, 1);
+			}
+		});
+	}
+
+	private void drawClippedEdges(Canvas canvas) {
+		ImageUtils.acceptClippingPoints(polygon.getPoints(), polygon.getClippedRectangle().getPoints(),
+				outsidePoint -> canvas.drawPoint(outsidePoint, polygon.getColor(), polygon.getBrush()),
+				insidePoint -> canvas.drawPoint(insidePoint, polygon.getColor().inverse(), polygon.getBrush()));
 	}
 
 	private boolean vertexSelected(Point click) {

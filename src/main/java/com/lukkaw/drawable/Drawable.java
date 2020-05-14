@@ -20,6 +20,7 @@ import lombok.Setter;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = LineDrawable.class, name = "LINE"),
 		@JsonSubTypes.Type(value = CircleDrawable.class, name = "CIRCLE"),
+		@JsonSubTypes.Type(value = PartCircleDrawable.class, name = "PART_CIRCLE"),
 		@JsonSubTypes.Type(value = PolygonDrawable.class, name = "POLYGON"),
 		@JsonSubTypes.Type(value = RectangleDrawable.class, name = "RECTANGLE"),
 })

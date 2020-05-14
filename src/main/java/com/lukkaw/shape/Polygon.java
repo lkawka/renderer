@@ -19,6 +19,7 @@ public class Polygon extends Shape {
 	private List<Point> points = new ArrayList<>();
 	private FillType fillType = FillType.NONE;
 	private String fillImagePath;
+	private Rectangle clippedRectangle;
 
 	public void add(Point point) {
 		points.add(point);
@@ -50,13 +51,25 @@ public class Polygon extends Shape {
 		return points.get(0);
 	}
 
-	public void setFill(FillType fillType, String fillImagePath) {
+	public void setFill(FillType fillType) {
 		this.fillType = fillType;
+	}
+
+	public void setFill(String fillImagePath) {
+		if (fillImagePath == null) {
+			throw new RuntimeException("Image path cannot be null");
+		}
+
+		this.fillType = FillType.IMAGE;
 		this.fillImagePath = fillImagePath;
 	}
 
 	public void clip(Rectangle rectangle) {
+		this.clippedRectangle = rectangle;
+	}
 
+	public List<Point> getPoints() {
+		return new ArrayList<>(points);
 	}
 
 	public enum FillType {

@@ -14,37 +14,17 @@ import com.lukkaw.Config;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
-public class Canvas {
-	private Integer width;
-	private Integer height;
-	private boolean useAntiAliasing;
-
-	private int[] raw;
+public class Canvas extends AbstractImage {
+	private final boolean useAntiAliasing;
 
 	public Canvas(Config config, boolean useAntiAliasing) {
-		this.width = config.getCanvasWidth();
-		this.height = config.getCanvasHeight();
+		super(config.getCanvasWidth(), config.getCanvasHeight());
 		this.useAntiAliasing = useAntiAliasing;
-
-		raw = new int[width * height * 3];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				setPixel(i, j, Color.BACKGROUND);
 			}
-		}
-	}
-
-	public void setPixel(Point point, Color color) {
-		setPixel(point.getX(), point.getY(), color);
-	}
-
-	public void setPixel(int x, int y, Color color) {
-		int i = getIndex(x, y);
-		if (x >= 0 && x < width && y >= 0 && y < height) {
-			raw[i] = color.getR();
-			raw[i + 1] = color.getG();
-			raw[i + 2] = color.getB();
 		}
 	}
 
@@ -134,10 +114,6 @@ public class Canvas {
 			setPixel(lineTransform.convertToOriginalZone(new Point(x, y)),
 					ImageUtils.lerp(Color.BACKGROUND, color, cov));
 		return cov;
-	}
-
-	private int getIndex(int x, int y) {
-		return y * 3 * width + x * 3;
 	}
 
 	private double coverage(double w, double D, double r) {

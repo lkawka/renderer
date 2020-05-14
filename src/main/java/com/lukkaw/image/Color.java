@@ -24,4 +24,8 @@ public class Color {
 	public javafx.scene.paint.Color cast() {
 		return new javafx.scene.paint.Color((float) r / 255, (float) g / 255, (float) b / 255, 1);
 	}
+
+	public Color inverse() {
+		return new Color(255 - r, 255 - g, 255 - b);
+	}
 }

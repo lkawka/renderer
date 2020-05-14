@@ -5,6 +5,7 @@ import static java.lang.Math.min;
 
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lukkaw.image.Point;
 import com.lukkaw.image.PointPair;
 
@@ -36,7 +37,6 @@ public class Rectangle extends Shape {
 	}
 
 	private void rearrangePoints(Point point1, Point point2) {
-		System.out.print("p1: " + point1 + ", p2: " + point2);
 		this.point1 = new Point(min(point1.getX(), point2.getX()), min(point1.getY(), point2.getY()));
 		this.point2 = new Point(max(point1.getX(), point2.getX()), max(point1.getY(), point2.getY()));
 	}
@@ -63,6 +63,11 @@ public class Rectangle extends Shape {
 		consumer.accept(new PointPair(new Point(x2, y1), new Point(x2, y2)));
 		consumer.accept(new PointPair(new Point(x2, y2), new Point(x1, y2)));
 		consumer.accept(new PointPair(new Point(x1, y2), new Point(x1, y1)));
+	}
+
+	@JsonIgnore
+	public PointPair getPoints() {
+		return new PointPair(point1, point2);
 	}
 
 }
