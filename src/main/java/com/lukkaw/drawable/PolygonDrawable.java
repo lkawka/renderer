@@ -25,7 +25,7 @@ public class PolygonDrawable extends Drawable {
 	private MovingState movingState = MovingState.NOTHING_SELECTED;
 	private Point selectedPoint;
 	private PointPair selectedLine;
-
+	@JsonIgnore
 	private FastImage selectedImage;
 
 	public PolygonDrawable() {

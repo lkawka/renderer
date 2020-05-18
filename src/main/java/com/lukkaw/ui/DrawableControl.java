@@ -52,6 +52,12 @@ public class DrawableControl implements DrawableListener {
 	private TextField thicknessField;
 	private Node fillControl;
 	private Node clipControl;
+	private RadioButton noFillButton;
+	private RadioButton colorFillButton;
+	private RadioButton imageFillButton;
+	private ToggleGroup fillToggleGroup;
+	private CheckBox clipCheckBox;
+	private ListView<Drawable> clipListView;
 
 	public DrawableControl(Controller controller, Stage stage) {
 		this.controller = controller;
@@ -113,6 +119,27 @@ public class DrawableControl implements DrawableListener {
 			} else {
 				fillControl.setDisable(false);
 				clipControl.setDisable(false);
+
+				Polygon polygon = (Polygon) drawable.getShape();
+
+				if (polygon.getClippedRectangle() != null) {
+					var rectangleDrawable = (RectangleDrawable) clipListView.getItems().filtered(
+							drawable1 -> drawable1.getShape().equals(polygon.getClippedRectangle()))
+							.get(0);
+					clipListView.getSelectionModel().select(rectangleDrawable);
+				}
+
+				switch (polygon.getFillType()) {
+				case NONE:
+					fillToggleGroup.selectToggle(noFillButton);
+					break;
+				case COLOR:
+					fillToggleGroup.selectToggle(colorFillButton);
+					break;
+				case IMAGE:
+					fillToggleGroup.selectToggle(imageFillButton);
+
+				}
 			}
 
 			selectedColorPicker.setValue(drawable.getShape().getColor().cast());
@@ -247,11 +274,11 @@ public class DrawableControl implements DrawableListener {
 	private Node createFillControl() {
 		Label fillLabel = new Label("Fill");
 
-		RadioButton noFillButton = new RadioButton("None");
-		RadioButton colorFillButton = new RadioButton("Color");
-		RadioButton imageFillButton = new RadioButton("Image");
+		noFillButton = new RadioButton("None");
+		colorFillButton = new RadioButton("Color");
+		imageFillButton = new RadioButton("Image");
 
-		ToggleGroup fillToggleGroup = new ToggleGroup();
+		fillToggleGroup = new ToggleGroup();
 		noFillButton.setToggleGroup(fillToggleGroup);
 		colorFillButton.setToggleGroup(fillToggleGroup);
 		imageFillButton.setToggleGroup(fillToggleGroup);
@@ -306,9 +333,9 @@ public class DrawableControl implements DrawableListener {
 	}
 
 	private Node createClipControl() {
-		CheckBox clipCheckBox = new CheckBox("Clip");
+		clipCheckBox = new CheckBox("Clip");
 
-		ListView<Drawable> clipListView = new ListView<>(
+		clipListView = new ListView<>(
 				allDrawables.filtered(drawable -> drawable.getType() == ShapeType.RECTANGLE));
 		clipListView.setDisable(!clipCheckBox.isSelected());
 		clipListView.setPrefSize(150, 150);

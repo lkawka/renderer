@@ -104,11 +104,11 @@ public class RectangleDrawable extends Drawable {
 	}
 
 	private void moveEntireRectangle(Point click) {
-		int dx = click.getX() - rectangle.getPoint1().getX();
-		int dy = click.getY() - rectangle.getPoint1().getY();
+		int dx = click.x - rectangle.getPoint1().x;
+		int dy = click.y - rectangle.getPoint1().y;
 
-		rectangle.setPoint1(new Point(rectangle.getPoint1().getX() + dx, rectangle.getPoint1().getY() + dy));
-		rectangle.setPoint2(new Point(rectangle.getPoint2().getX() + dx, rectangle.getPoint2().getY() + dy));
+		rectangle.setPoint1(new Point(rectangle.getPoint1().x + dx, rectangle.getPoint1().y + dy));
+		rectangle.setPoint2(new Point(rectangle.getPoint2().x + dx, rectangle.getPoint2().y + dy));
 	}
 
 	private void movePoint(Point click) {

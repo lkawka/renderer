@@ -1,109 +1,232 @@
 [ {
-  "name" : "Circle #1",
-  "type" : "CIRCLE",
-  "state" : "MOVING",
-  "circle" : {
-    "color" : {
-      "r" : 255,
-      "g" : 230,
-      "b" : 153
+  "type": "RECTANGLE",
+  "state": "DONE",
+  "name": "RECTANGLE #1",
+  "rectangle": {
+    "color": {
+      "r": 26,
+      "g": 77,
+      "b": 77
     },
-    "brush" : 5,
-    "priority" : 8,
-    "center" : {
-      "x" : 242,
-      "y" : 205
+    "brush": 2,
+    "priority": 3,
+    "point1": {
+      "x": 370,
+      "y": 96
     },
-    "radius" : 17
-  },
-  "changingRadius" : false
-}, {
-  "name" : "Polygon #2",
-  "type" : "POLYGON",
-  "state" : "MOVING",
-  "polygon" : {
-    "color" : {
-      "r" : 102,
-      "g" : 153,
-      "b" : 153
-    },
-    "brush" : 2,
-    "priority" : 5,
-    "points" : [ {
-      "x" : 224,
-      "y" : 111
-    }, {
-      "x" : 31,
-      "y" : 246
-    }, {
-      "x" : 198,
-      "y" : 338
-    }, {
-      "x" : 526,
-      "y" : 255
-    }, {
-      "x" : 449,
-      "y" : 147
-    }, {
-      "x" : 360,
-      "y" : 65
-    }, {
-      "x" : 322,
-      "y" : 251
-    }, {
-      "x" : 327,
-      "y" : 387
-    }, {
-      "x" : 213,
-      "y" : 366
-    }, {
-      "x" : 264,
-      "y" : 188
-    }, {
-      "x" : 234,
-      "y" : 169
-    }, {
-      "x" : 223,
-      "y" : 110
-    } ]
-  },
-  "movingState" : "NOTHING_SELECTED",
-  "selectedPoint" : {
-    "x" : 335,
-    "y" : 154
-  },
-  "selectedLine" : {
-    "point1" : {
-      "x" : 325,
-      "y" : 204
-    },
-    "point2" : {
-      "x" : 363,
-      "y" : 18
+    "point2": {
+      "x": 578,
+      "y": 173
     }
-  }
-}, {
-  "name" : "Line #3",
-  "type" : "LINE",
-  "state" : "MOVING",
-  "line" : {
-    "color" : {
-      "r" : 0,
-      "g" : 0,
-      "b" : 0
-    },
-    "brush" : 7,
-    "priority" : 7,
-    "pair" : {
-      "point1" : {
-        "x" : 117,
-        "y" : 119
+  },
+  "movingState": "NOTHING_SELECTED",
+  "selectedPoint": null,
+  "selectedLine": null
+},
+  {
+    "type": "POLYGON",
+    "state": "DONE",
+    "name": "POLYGON #2",
+    "polygon": {
+      "color": {
+        "r": 204,
+        "g": 51,
+        "b": 51
       },
-      "point2" : {
-        "x" : 302,
-        "y" : 264
+      "brush": 2,
+      "priority": 5,
+      "points": [
+        {
+          "x": 398,
+          "y": 60
+        },
+        {
+          "x": 449,
+          "y": 143
+        },
+        {
+          "x": 322,
+          "y": 148
+        },
+        {
+          "x": 334,
+          "y": 206
+        },
+        {
+          "x": 450,
+          "y": 218
+        },
+        {
+          "x": 408,
+          "y": 158
+        },
+        {
+          "x": 505,
+          "y": 152
+        },
+        {
+          "x": 498,
+          "y": 182
+        },
+        {
+          "x": 570,
+          "y": 182
+        },
+        {
+          "x": 549,
+          "y": 153
+        },
+        {
+          "x": 550,
+          "y": 121
+        },
+        {
+          "x": 561,
+          "y": 119
+        },
+        {
+          "x": 564,
+          "y": 141
+        },
+        {
+          "x": 569,
+          "y": 125
+        },
+        {
+          "x": 552,
+          "y": 101
+        },
+        {
+          "x": 474,
+          "y": 117
+        },
+        {
+          "x": 427,
+          "y": 48
+        },
+        {
+          "x": 397,
+          "y": 60
+        }
+      ],
+      "fillType": "NONE",
+      "fillImagePath": null,
+      "clippedRectangle": {
+        "color": {
+          "r": 26,
+          "g": 77,
+          "b": 77
+        },
+        "brush": 2,
+        "priority": 3,
+        "point1": {
+          "x": 370,
+          "y": 96
+        },
+        "point2": {
+          "x": 578,
+          "y": 173
+        }
       }
-    }
+    },
+    "movingState": "NOTHING_SELECTED",
+    "selectedPoint": null,
+    "selectedLine": null,
+    "selectedImage": null
   },
-  "movingState" : "NO_POINT_SELECTED"
-} ]
+  {
+    "type": "POLYGON",
+    "state": "DONE",
+    "name": "POLYGON #3",
+    "polygon": {
+      "color": {
+        "r": 26,
+        "g": 77,
+        "b": 26
+      },
+      "brush": 1,
+      "priority": 7,
+      "points": [
+        {
+          "x": 103,
+          "y": 93
+        },
+        {
+          "x": 27,
+          "y": 271
+        },
+        {
+          "x": 108,
+          "y": 376
+        },
+        {
+          "x": 254,
+          "y": 338
+        },
+        {
+          "x": 184,
+          "y": 145
+        },
+        {
+          "x": 104,
+          "y": 93
+        }
+      ],
+      "fillType": "COLOR",
+      "fillImagePath": null,
+      "clippedRectangle": null
+    },
+    "movingState": "NOTHING_SELECTED",
+    "selectedPoint": null,
+    "selectedLine": null,
+    "selectedImage": null
+  },
+  {
+    "type": "POLYGON",
+    "state": "DONE",
+    "name": "POLYGON #4",
+    "polygon": {
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "brush": 1,
+      "priority": 9,
+      "points": [
+        {
+          "x": 372,
+          "y": 289
+        },
+        {
+          "x": 332,
+          "y": 382
+        },
+        {
+          "x": 570,
+          "y": 374
+        },
+        {
+          "x": 624,
+          "y": 280
+        },
+        {
+          "x": 477,
+          "y": 254
+        },
+        {
+          "x": 372,
+          "y": 287
+        }
+      ],
+      "fillType": "IMAGE",
+      "fillImagePath": "C:\\Users\\lukkaw\\Documents\\renderer\\src\\main\\resources\\inverted.jpg",
+      "clippedRectangle": null
+    },
+    "movingState": "NOTHING_SELECTED",
+    "selectedPoint": null,
+    "selectedLine": null,
+    "selectedImage": {
+      "filename": "C:\\Users\\lukkaw\\Documents\\renderer\\src\\main\\resources\\inverted.jpg"
+    }
+  } ]
