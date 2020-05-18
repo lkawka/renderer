@@ -1,8 +1,10 @@
 package com.lukkaw.image;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Getter
 public abstract class AbstractImage {
 	protected Integer width;
 	protected Integer height;

@@ -70,7 +70,8 @@ public class DrawableControl implements DrawableListener {
 		VBox vBox = createVBox();
 		vBox.setPrefWidth(300);
 		vBox.setPadding(new Insets(4));
-		vBox.getChildren().addAll(createNewDrawableMenu(), createAntiAliasingControl(), createDrawableList(),
+		vBox.getChildren().addAll(createNewDrawableMenu(), createAntiAliasingControl(), createBorderFillControl(),
+				createDrawableList(),
 				createSingleDrawableControl());
 		return vBox;
 	}
@@ -186,6 +187,32 @@ public class DrawableControl implements DrawableListener {
 			}
 		});
 		return antiAliasingCheckBox;
+	}
+
+	private Node createBorderFillControl() {
+		Label borderColorLabel = new Label("Border color");
+		ColorPicker borderColorPicker = new ColorPicker();
+		Label fillColorLabel = new Label("Fill color");
+		ColorPicker fillColorPicker = new ColorPicker();
+
+		Button fillButton = new Button("Fill");
+		fillButton.setOnAction(e -> controller
+				.setFill(new Color(borderColorPicker.getValue()), new Color(fillColorPicker.getValue())));
+
+		HBox row1 = createHBox();
+		row1.getChildren().addAll(borderColorLabel, borderColorPicker);
+
+		HBox row2 = createHBox();
+		row2.getChildren().addAll(fillColorLabel, fillColorPicker);
+
+		HBox row3 = createHBox();
+		row3.getChildren().addAll(fillButton);
+
+		VBox vBox = createVBox();
+		vBox.getChildren().addAll(row1, row2, row3);
+		vBox.setPrefHeight(100);
+
+		return vBox;
 	}
 
 	private Node createDrawableList() {

@@ -1,5 +1,7 @@
 package com.lukkaw.image;
 
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,5 +29,22 @@ public class Color {
 
 	public Color inverse() {
 		return new Color(255 - r, 255 - g, 255 - b);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Color color = (Color) o;
+		return r == color.r &&
+				g == color.g &&
+				b == color.b;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(r, g, b);
 	}
 }

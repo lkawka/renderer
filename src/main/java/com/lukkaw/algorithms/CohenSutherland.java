@@ -84,8 +84,6 @@ public class CohenSutherland {
 						x = xmin;
 					}
 
-					// Now we move outside point to intersection point to clip
-					// and get ready for next pass.
 					if (outCodeOut == outCode0) {
 						xx0 = x;
 						yy0 = y;
