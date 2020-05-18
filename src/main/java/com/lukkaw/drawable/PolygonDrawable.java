@@ -112,7 +112,9 @@ public class PolygonDrawable extends Drawable {
 		int dy = polygon.getPoints().stream().mapToInt(Point::getY).min().getAsInt();
 
 		ImageUtils.acceptFillPoints(polygon.getPoints(), point -> {
-			Color color = selectedImage.getPixel(point.getX() - dx, point.getY() - dy);
+			int x = (point.x - dx + selectedImage.getWidth()) % selectedImage.getWidth();
+			int y = (point.y - dy + selectedImage.getHeight()) % selectedImage.getHeight();
+			Color color = selectedImage.getPixel(x, y);
 			if (color != null) {
 				canvas.drawPoint(point, color, 1);
 			}
