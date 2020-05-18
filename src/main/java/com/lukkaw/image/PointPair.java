@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PointPair {
-	private Point point1;
-	private Point point2;
+	public Point point1;
+	public Point point2;
 
 	public PointPair(Point point) {
 		point1 = point;
