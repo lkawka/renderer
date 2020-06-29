@@ -1,6 +1,7 @@
 package com.lukkaw.image;
 
 import java.util.Objects;
+import java.util.Random;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,12 +11,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Color {
+	private static final Random random = new Random();
 	public static final Color BLACK = new Color(0, 0, 0);
 	public static final Color BACKGROUND = new Color(255, 255, 255);
 
 	private int r;
 	private int g;
 	private int b;
+
+	public static Color random() {
+		return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+	}
 
 	public Color(javafx.scene.paint.Color color) {
 		r = (int) (color.getRed() * 255);

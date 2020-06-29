@@ -1,198 +1,83 @@
 package com.lukkaw.controller;
 
-import static java.util.Comparator.comparing;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.lukkaw.Config.S_X;
+import static com.lukkaw.Config.S_Y;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
-import com.lukkaw.Config;
-import com.lukkaw.drawable.Drawable;
+import com.lukkaw.algorithms.BackFaceCulling;
+import com.lukkaw.algorithms.Projection;
+import com.lukkaw.algorithms.Transform;
+import com.lukkaw.arithmetics.Vector;
 import com.lukkaw.image.Canvas;
 import com.lukkaw.image.Color;
+import com.lukkaw.image.ImageUtils;
 import com.lukkaw.image.Point;
+import com.lukkaw.shapes.Cylinder;
 
-import javafx.scene.input.MouseEvent;
+import lombok.Getter;
 
+@Getter
 public class Controller {
 
-	private final Config config;
+	private final Cylinder cylinder;
+	private CameraMovement cameraMovement = new CameraMovement(0D, 0D, 0D, 3D);
+	private Vector lightSource = new Vector(50, 0, 0);
+
 	private final List<ImageListener> imageListeners = new ArrayList<>();
-	private final List<DrawableListener> drawableListeners = new ArrayList<>();
-	private final List<Drawable> drawables = new ArrayList<>();
-	private Drawable active;
-	private Long highestPriority = 1L;
-	private Boolean useAntiAliasing = false;
 
-	private Color borderColor;
-	private Color fillColor;
-	private boolean fill = false;
-
-	public Controller(Config config) {
-		this.config = config;
+	public Controller(Cylinder cylinder) {
+		this.cylinder = cylinder;
 	}
 
-	public void imageClicked(MouseEvent e) {
-		Point click = new Point((int) e.getX(), (int) e.getY());
-		if (fill) {
-			fill(click);
-			fill = false;
-		} else if (active != null) {
-			active.edit(click);
-			refresh();
+	public void cameraMoved(CameraMovement cameraMovement) {
+		this.cameraMovement = cameraMovement;
+		draw();
+	}
+
+	public void init() {
+		draw();
+	}
+
+	private void draw() {
+		Canvas canvas = new Canvas(S_X, S_Y, false);
+		for (int i = 0; i < cylinder.triangles.length; i++) {
+			final var triangle = cylinder.triangles[i];
+			final var tfmVertices = new Vector[3];
+			for (int j = 0; j < 3; j++) {
+				final var vertex = triangle.raw[j];
+				tfmVertices[j] = Transform.call(vertex.p, this.cameraMovement.dAlpha, this.cameraMovement.dBeta,
+						this.cameraMovement.dGamma, this.cameraMovement.dz);
+			}
+			if (BackFaceCulling.call(tfmVertices[0], tfmVertices[1], tfmVertices[2])) {
+				final var p1 = Projection.call(tfmVertices[0]);
+				final var p2 = Projection.call(tfmVertices[1]);
+				final var p3 = Projection.call(tfmVertices[2]);
+
+				Color c = Color.random();
+				List<Point> points = newArrayList(p1, p2, p3).stream()
+						.map(v -> {
+							int x = max(0, min(S_X, (int) v.raw[0]));
+							int y = max(0, min(S_Y, (int) v.raw[1]));
+							return new Point(x, y);
+						}).collect(toList());
+				ImageUtils.acceptFillPoints(points, point -> canvas.drawPoint(point, c, 1));
+			}
 		}
+		draw(canvas);
 	}
 
 	public void addListener(ImageListener listener) {
 		this.imageListeners.add(listener);
 	}
 
-	public void addListener(DrawableListener listener) {
-		this.drawableListeners.add(listener);
-	}
-
-	public void addDrawable(Drawable drawable) {
-		drawables.add(drawable);
-		broadcastDrawableAdded(drawable);
-
-		setActive(drawable);
-	}
-
-	public void removeDrawable(Drawable drawable) {
-		drawables.remove(drawable);
-
-		resetActive();
-		broadcastDrawableRemoved(drawable);
-	}
-
-	public void setActive(Drawable drawable) {
-		if (active != null) {
-			active.setIsActive(false);
-		}
-
-		active = drawable;
-		drawable.setIsActive(true);
-		drawable.getShape().setPriority(incrementAndGetHighestPriority());
-
-		refresh();
-	}
-
-	public void setFill(Color borderColor, Color fillColor) {
-		fill = true;
-		this.borderColor = borderColor;
-		this.fillColor = fillColor;
-	}
-
-	public void resetActive() {
-		if (active != null) {
-			active.setIsActive(false);
-			active = null;
-		}
-
-		refresh();
-	}
-
-	public void clear() {
-		drawables.forEach(this::broadcastDrawableRemoved);
-		drawables.clear();
-
-		highestPriority = 1L;
-
-		resetActive();
-	}
-
-	public void load(List<Drawable> drawables) {
-		clear();
-
-		if (drawables != null) {
-			this.drawables.addAll(drawables);
-			highestPriority += drawables.size();
-
-			drawables.forEach(this::broadcastDrawableAdded);
-
-			refresh();
-		}
-	}
-
-	public List<Drawable> getDrawables() {
-		return new ArrayList<>(drawables);
-	}
-
-	public void refresh() {
-		broadcastActiveSet(active);
-		redrawDrawables();
-	}
-
-	public Boolean getAntiAliasing() {
-		return useAntiAliasing;
-	}
-
-	public void setAntiAliasing(boolean useAntiAliasing) {
-		this.useAntiAliasing = useAntiAliasing;
-		refresh();
-	}
-
-	private void redrawDrawables() {
-		Canvas image = new Canvas(config, useAntiAliasing);
-		redrawDrawables(image);
-	}
-
-	private void redrawDrawables(Canvas image) {
-		drawables.stream()
-				.sorted(comparing(d -> d.getShape().getPriority()))
-				.forEach(drawable -> drawable.draw(image));
-		draw(image);
-	}
-
 	private void draw(Canvas image) {
 		imageListeners.forEach(listener -> listener.draw(image));
 	}
 
-	private void broadcastDrawableAdded(Drawable drawable) {
-		drawableListeners.forEach(listener -> listener.drawableAdded(drawable));
-	}
-
-	private void broadcastDrawableRemoved(Drawable drawable) {
-		drawableListeners.forEach(listener -> listener.drawableRemoved(drawable));
-	}
-
-	private void broadcastActiveSet(Drawable drawable) {
-		drawableListeners.forEach(listener -> listener.activeSet(drawable));
-	}
-
-	private Long incrementAndGetHighestPriority() {
-		highestPriority += 1;
-		return highestPriority;
-	}
-
-	private void fill(Point click) {
-		Canvas image = new Canvas(config, useAntiAliasing);
-		drawables.stream()
-				.sorted(comparing(d -> d.getShape().getPriority()))
-				.forEach(drawable -> drawable.draw(image));
-
-		Queue<Point> points = new LinkedList<>();
-		points.add(click);
-		while (!points.isEmpty()) {
-			Point point = points.poll();
-			Color c = image.getPixel(point);
-			if (!c.equals(borderColor) && !c.equals(fillColor)) {
-				image.setPixel(point, fillColor);
-				if (point.x > 0) {
-					points.add(new Point(point.x - 1, point.y));
-				}
-				if (point.y > 0) {
-					points.add(new Point(point.x, point.y - 1));
-				}
-				if (point.x < image.getWidth() - 1) {
-					points.add(new Point(point.x + 1, point.y));
-				}
-				if (point.y < image.getHeight() - 1) {
-					points.add(new Point(point.x, point.y + 1));
-				}
-			}
-		}
-		draw(image);
-	}
 }

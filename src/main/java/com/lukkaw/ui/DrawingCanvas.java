@@ -1,6 +1,8 @@
 package com.lukkaw.ui;
 
-import com.lukkaw.Config;
+import static com.lukkaw.Config.S_X;
+import static com.lukkaw.Config.S_Y;
+
 import com.lukkaw.controller.Controller;
 import com.lukkaw.controller.ImageListener;
 import com.lukkaw.image.Canvas;
@@ -16,19 +18,18 @@ public class DrawingCanvas implements ImageListener {
 
 	private ImageView imageView;
 
-	public DrawingCanvas(Config config, Controller controller) {
+	public DrawingCanvas(Controller controller) {
 		controller.addListener(this);
 
-		imageView = new ImageView(new Canvas(config, false).getImage());
-		imageView.setFitHeight(config.getCanvasHeight());
-		imageView.setFitWidth(config.getCanvasWidth());
+		imageView = new ImageView(new Canvas(S_X, S_Y, false).getImage());
+		imageView.setFitHeight(S_Y);
+		imageView.setFitWidth(S_X);
 		imageView.setPreserveRatio(true);
-
-		imageView.setOnMouseClicked(controller::imageClicked);
 	}
 
 	@Override
 	public void draw(Canvas image) {
+		System.out.println("canvas received");
 		imageView.setImage(image.getImage());
 	}
 
@@ -44,5 +45,4 @@ public class DrawingCanvas implements ImageListener {
 
 		return box;
 	}
-
 }

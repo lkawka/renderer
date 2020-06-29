@@ -9,16 +9,14 @@ import static java.lang.Math.sqrt;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
-import com.lukkaw.Config;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
 public class Canvas extends AbstractImage {
 	private final boolean useAntiAliasing;
 
-	public Canvas(Config config, boolean useAntiAliasing) {
-		super(config.getCanvasWidth(), config.getCanvasHeight());
+	public Canvas(int width, int height, boolean useAntiAliasing) {
+		super(width, height);
 		this.useAntiAliasing = useAntiAliasing;
 
 		for (int i = 0; i < width; i++) {

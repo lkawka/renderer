@@ -71,6 +71,9 @@ public class ImageUtils {
 
 	public static void acceptFillPoints(List<Point> vertices, Consumer<Point> consumer) {
 		SnanLineActiveEdgeTableVertexSorting.accept(vertices, consumer);
+		for (int i = 1; i < vertices.size(); i++) {
+			acceptLinePoints(new PointPair(vertices.get(i - 1), vertices.get(i)), consumer);
+		}
 	}
 
 	public static void acceptClippingPoints(PointPair line, PointPair rectangle, Consumer<Point> outsideConsumer,
